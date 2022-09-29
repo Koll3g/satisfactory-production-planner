@@ -1,3 +1,5 @@
+// import data from './data/mdocs.json'
+
 export class recipe {
     constructor(id, name, duration, MaterialInput, MaterialOutput){
         this.id = id;
@@ -8,6 +10,8 @@ export class recipe {
     }
 
     static getTestRecipes(){
+        // console.log(data)
+
         var testRecipe1 = new recipe(
             1, 
             "Coated Iron Plate", 

@@ -2,9 +2,9 @@
     import {ref} from 'vue'
     import InputNode from './InputNode.vue';
     import OutputNode from './OutputNode.vue';
-    import { recipe } from './classes/recipe.js';
+    import {recipe} from './classes/recipe.js';
 
-    const selectedRecipeId = ref()
+    const selectedRecipeId = ref(1)
     const recipes = ref(recipe.getTestRecipes())
 </script>
 

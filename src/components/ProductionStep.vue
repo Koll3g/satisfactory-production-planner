@@ -4,8 +4,13 @@
     import OutputNode from './OutputNode.vue';
     import {recipe} from './classes/recipe.js';
 
+    const quantity = ref(1)
     const selectedRecipe = ref({})
     const recipes = ref(recipe.getRecipes())
+    
+    function calculateSpeed(materialLineItemAmount) {
+        return quantity.value * parseInt(materialLineItemAmount) // / selectedRecipe.refs.duration * 60
+    }
 </script>
 
 
@@ -17,7 +22,7 @@
         <div class="flex-row">
             <div id="leftRow" class="flex-column">
                 <label>Quantity:</label>
-                <input type="number" placeholder="1"/>
+                <input type="number" placeholder="1" v-model="quantity"/>
             </div>
             <div id="rightRow" class="flex-column">
                 <label>Efficency:</label>
@@ -34,8 +39,8 @@
         </div>
         <div class="flex-row">
             <div class="flex-column, half-width">
-                <li v-for="ingredient in selectedRecipe.ingredients">
-                    {{ingredient.material.name}}
+                <li style="list-style: none;" v-for="ingredient in selectedRecipe.ingredients">
+                    <InputNode :materialName="ingredient.material.name" :totalAmount="calculateSpeed(ingredient.amount)"></InputNode>
                 </li>
             </div>
             <div class="flex-column, half-width">

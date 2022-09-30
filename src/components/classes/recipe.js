@@ -21,7 +21,7 @@ export class recipe {
 
     static extractRecipes(unfilteredData){
         var FGRecipes = unfilteredData.filter((item) => item.NativeClass == "Class'/Script/FactoryGame.FGRecipe'")
-        var producableOnly = FGRecipes[0].Classes.filter((item) => ((item.mProducedIn != "") && (item.mProducedIn != "(/Game/FactoryGame/Equipment/BuildGun/BP_BuildGun.BP_BuildGun_C)")))
+        var producableOnly = FGRecipes[0].Classes.filter((item) => ((item.mProducedIn != "") && (item.mProducedIn != "(/Game/FactoryGame/Equipment/BuildGun/BP_BuildGun.BP_BuildGun_C)")  && (item.mProducedIn != "(/Script/FactoryGame.FGBuildGun)")))
         return (producableOnly)
     }
 
@@ -29,7 +29,8 @@ export class recipe {
         let parsedRecipes = [] 
         FGRecipes.forEach((fgr) => {
             // let testString = "((ItemClass=BlueprintGeneratedClass'\"/Game/FactoryGame/Resource/RawResources/Sulfur/Desc_Sulfur.Desc_Sulfur_C\"',Amount=6),(ItemClass=BlueprintGeneratedClass'\"/Game/FactoryGame/Resource/Parts/AluminumPlate/Desc_AluminumPlate.Desc_AluminumPlate_C\"',Amount=7),(ItemClass=BlueprintGeneratedClass'\"/Game/FactoryGame/Resource/Parts/Plastic/Desc_Plastic.Desc_Plastic_C\"',Amount=8),(ItemClass=BlueprintGeneratedClass'\"/Game/FactoryGame/Resource/Parts/Wire/Desc_Wire.Desc_Wire_C\"',Amount=12))";
-            
+            // https://regex101.com/r/YfrtQJ/2
+            // regex muss S{10} anstatt S{11} sein (komisch, ist aber so)
             const regex1 = /(\.(Desc(\w*)))\S{10}(\d*)\)/g
             let matches1 = [];
             let match1;
@@ -45,6 +46,8 @@ export class recipe {
                 ingredients.push(new materialLineItem(amount, material));
             })
 
+            // https://regex101.com/r/YfrtQJ/2
+            // regex muss S{10} anstatt S{11} sein (komisch, ist aber so)
             const regex2 = /(\.(Desc(\w*)))\S{10}(\d*)\)/g
             let matches2 = [];
             let match2;

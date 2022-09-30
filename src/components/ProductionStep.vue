@@ -25,7 +25,7 @@
             </div>
         </div>
         <div>
-            <label class="fullWidth">Recipe (selected Recipe: {{selectedRecipe.id}})</label>
+            <label class="fullWidth">Recipe (selected Recipe: {{selectedRecipe}})</label>
             <select class="fullWidth" v-model="selectedRecipe">
                 <option v-for="recipe in recipes" :value="recipe">
                     {{ recipe.name }}
@@ -34,8 +34,9 @@
         </div>
         <div class="flex-row">
             <div class="flex-column, half-width">
-                <InputNode></InputNode>
-                <InputNode></InputNode>
+                <li v-for="ingredient in selectedRecipe.ingredients">
+                    {{ingredient.material.name}}
+                </li>
             </div>
             <div class="flex-column, half-width">
                 <OutputNode></OutputNode>

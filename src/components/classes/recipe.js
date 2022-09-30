@@ -16,13 +16,13 @@ export class recipe {
         this.fillMaterialList(data);
         var rawRecipes = this.extractRecipes(data);
         var parsedRecipesResponse = this.parseRecipes(rawRecipes);
-        var test = 1;
         return parsedRecipesResponse
     }
 
     static extractRecipes(unfilteredData){
         var FGRecipes = unfilteredData.filter((item) => item.NativeClass == "Class'/Script/FactoryGame.FGRecipe'")
-        return (FGRecipes[0].Classes)
+        var producableOnly = FGRecipes[0].Classes.filter((item) => ((item.mProducedIn != "") && (item.mProducedIn != "(/Game/FactoryGame/Equipment/BuildGun/BP_BuildGun.BP_BuildGun_C)")))
+        return (producableOnly)
     }
 
     static parseRecipes(FGRecipes){
@@ -61,13 +61,8 @@ export class recipe {
             })
             parsedRecipes.push(new recipe(fgr.ClassName, fgr.mDisplayName, ingredients, products, fgr.mManufacturingDuration))
         })
-        var test = 1;
         return parsedRecipes;
     }
-
-
-
-
 
     static fillMaterialList(unfilteredData){
         var mixedMaterials = this.extractMaterials(unfilteredData);

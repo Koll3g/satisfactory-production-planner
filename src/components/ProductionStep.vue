@@ -4,8 +4,8 @@
     import OutputNode from './OutputNode.vue';
     import {recipe} from './classes/recipe.js';
 
-    const selectedRecipeId = ref(1)
-    const recipes = ref(recipe.getTestRecipes())
+    const selectedRecipe = ref({})
+    const recipes = ref(recipe.getRecipes())
 </script>
 
 
@@ -25,9 +25,9 @@
             </div>
         </div>
         <div>
-            <label class="fullWidth">Recipe (selected Recipe Id: {{selectedRecipeId}})</label>
-            <select class="fullWidth" v-model="selectedRecipeId">
-                <option v-for="recipe in recipes" :value="recipe.id">
+            <label class="fullWidth">Recipe (selected Recipe: {{selectedRecipe.id}})</label>
+            <select class="fullWidth" v-model="selectedRecipe">
+                <option v-for="recipe in recipes" :value="recipe">
                     {{ recipe.name }}
                 </option>
             </select>

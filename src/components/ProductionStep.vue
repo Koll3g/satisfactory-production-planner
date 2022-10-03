@@ -55,12 +55,12 @@
         <div class="flex-row">
             <div class="flex-column, half-width">
                 <li style="list-style: none;" v-for="ingredient in getSelectedRecipe(selectedRecipeId).ingredients">
-                    <InputNode :materialName="ingredient.material.name" :totalAmount="calculateSpeed(ingredient.amount)"></InputNode>
+                    <InputNode :materialName="ingredient.material.name" :totalAmount="calculateSpeed(ingredient.amount)" :unit="ingredient.material.getUnit()"></InputNode>
                 </li>
             </div>
             <div class="flex-column, half-width">
                 <li style="list-style: none;" v-for="product in getSelectedRecipe(selectedRecipeId).products">
-                    <OutputNode :materialName="product.material.name" :totalAmount="calculateSpeed(product.amount)"></OutputNode>
+                    <OutputNode :materialName="product.material.name" :totalAmount="calculateSpeed(product.amount)" :unit="product.material.getUnit()"></OutputNode>
                 </li>
             </div>
         </div>

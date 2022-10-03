@@ -16,7 +16,20 @@ export class recipe {
         this.fillMaterialList(data);
         var rawRecipes = this.extractRecipes(data);
         var parsedRecipesResponse = this.parseRecipes(rawRecipes);
-        return parsedRecipesResponse
+        var sortedRecipes = this.sortRecipes(parsedRecipesResponse)
+        return sortedRecipes
+    }
+
+    static sortRecipes(unsortedRecipes){
+        return unsortedRecipes.sort((recipeA, recipeB) => {
+            if(recipeA.name > recipeB.name){
+                return 1
+            }
+            if(recipeA.name < recipeB.name){
+                return -1
+            }
+            return 0
+        })
     }
 
     static extractRecipes(unfilteredData){
@@ -33,9 +46,9 @@ export class recipe {
         let parsedRecipes = [] 
         FGRecipes.forEach((fgr) => {
             // let testString = "((ItemClass=BlueprintGeneratedClass'\"/Game/FactoryGame/Resource/RawResources/Sulfur/Desc_Sulfur.Desc_Sulfur_C\"',Amount=6),(ItemClass=BlueprintGeneratedClass'\"/Game/FactoryGame/Resource/Parts/AluminumPlate/Desc_AluminumPlate.Desc_AluminumPlate_C\"',Amount=7),(ItemClass=BlueprintGeneratedClass'\"/Game/FactoryGame/Resource/Parts/Plastic/Desc_Plastic.Desc_Plastic_C\"',Amount=8),(ItemClass=BlueprintGeneratedClass'\"/Game/FactoryGame/Resource/Parts/Wire/Desc_Wire.Desc_Wire_C\"',Amount=12))";
-            // https://regex101.com/r/QFayWv/1
+            // https://regex101.com/r/QFayWv/2
             // regex muss S{10} anstatt S{11} sein (komisch, ist aber so)
-            const regex1 = /(\.((Desc|BP_EquipmentDescriptor)(\w*)))\S{10}(\d*)\)/g
+            const regex1 = /(\.((Desc|BP_EquipmentDescriptor|BP_ItemDescriptor)(\w*)))\S{10}(\d*)\)/g
             let matches1 = [];
             let match1;
             while ((match1 = regex1.exec(fgr.mIngredients)) !== null){
@@ -47,13 +60,24 @@ export class recipe {
                 var id = match[2];
                 var amount = match[5];
                 var material = this.materials.find((material) => material.id == id);
-                ingredients.push(new materialLineItem(amount, material));
+                if(material == null){
+                    console.log(id)
+                }
+                else{
+                    if(material.name == "Desc_LiquidOil_C"){
+                        let test = ""
+                    }
+                    if(material.form == "RF_LIQUID" && fgr.ClassName != "Recipe_CrudeOil_C"){
+                        amount = amount/1000
+                    }
+                    ingredients.push(new materialLineItem(amount, material));
+                }
             })
 
-            // https://regex101.com/r/QFayWv/1
+            // https://regex101.com/r/QFayWv/2
             // regex muss S{10} anstatt S{11} sein (komisch, ist aber so)
             // /(\.(Desc(\w*)))\S{10}(\d*)\)/g
-            const regex2 = /(\.((Desc|BP_EquipmentDescriptor)(\w*)))\S{10}(\d*)\)/g
+            const regex2 = /(\.((Desc|BP_EquipmentDescriptor|BP_ItemDescriptor)(\w*)))\S{10}(\d*)\)/g
             let matches2 = [];
             let match2;
             while ((match2 = regex2.exec(fgr.mProduct)) !== null){
@@ -65,7 +89,18 @@ export class recipe {
                 var id = match[2];
                 var amount = match[5];
                 var material = this.materials.find((material) => material.id == id);
-                products.push(new materialLineItem(amount, material));
+                if(material == null){
+                    console.log(id)
+                }
+                else{
+                    if(material.name == "Desc_LiquidOil_C"){
+                        let test = ""
+                    }
+                    if(material.form == "RF_LIQUID" && fgr.ClassName != "Recipe_CrudeOil_C"){
+                        amount = amount/1000
+                    }
+                    products.push(new materialLineItem(amount, material));
+                }
             })
             parsedRecipes.push(new recipe(fgr.ClassName, fgr.mDisplayName, ingredients, products, parseFloat(fgr.mManufactoringDuration)))
         })
@@ -95,6 +130,7 @@ export class recipe {
         var FGConsumableDescriptor = unfilteredData.filter((item) => item.NativeClass == "Class'/Script/FactoryGame.FGConsumableDescriptor'")
         var FGAmmoTypeSpreadshot = unfilteredData.filter((item) => item.NativeClass == "Class'/Script/FactoryGame.FGAmmoTypeSpreadshot'")
         var FGAmmoTypeInstantHit = unfilteredData.filter((item) => item.NativeClass == "Class'/Script/FactoryGame.FGAmmoTypeInstantHit'")
+        var FGEquipmentDescriptor = unfilteredData.filter((item) => item.NativeClass == "Class'/Script/FactoryGame.FGEquipmentDescriptor'")
         var mixedMaterials = FGItemDescriptor[0].Classes.concat(FGResourceDescriptor[0].Classes);
         var mixedMaterials = mixedMaterials.concat(FGItemDescriptorBiomass[0].Classes)
         var mixedMaterials = mixedMaterials.concat(FGAmmoTypeProjectile[0].Classes)
@@ -102,12 +138,13 @@ export class recipe {
         var mixedMaterials = mixedMaterials.concat(FGConsumableDescriptor[0].Classes)
         var mixedMaterials = mixedMaterials.concat(FGAmmoTypeSpreadshot[0].Classes)
         var mixedMaterials = mixedMaterials.concat(FGAmmoTypeInstantHit[0].Classes)
+        var mixedMaterials = mixedMaterials.concat(FGEquipmentDescriptor[0].Classes)
         return (mixedMaterials)
     }
 
     static parseMaterials(mixedMaterials){
         var materials = []
-        mixedMaterials.forEach((mixedMaterial) => materials.push(new material(mixedMaterial.ClassName, mixedMaterial.mDisplayName)))
+        mixedMaterials.forEach((mixedMaterial) => materials.push(new material(mixedMaterial.ClassName, mixedMaterial.mDisplayName, mixedMaterial.mForm)))
         return materials;
     }
 
@@ -172,8 +209,18 @@ export class products{
 }
 
 export class material{
-    constructor(id, name){
+    constructor(id, name, form){
         this.name = name;
         this.id = id;
+        this.form = form;
+    }
+
+    getUnit = () => {
+        if(this.form == "RF_LIQUID"){
+            return "m3/min"
+        }
+        else{
+            return "items/min"
+        }
     }
 }

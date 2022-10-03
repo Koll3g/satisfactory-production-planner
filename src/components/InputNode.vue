@@ -1,14 +1,15 @@
 <script setup>
     const props = defineProps({
   materialName: String,
-  totalAmount: Number
+  totalAmount: Number,
+  unit: String
 })
 </script>
 
 <template>
     <div class="inputNode">
         <p>{{materialName}}</p>
-        <p>{{totalAmount}} / min</p>
+        <p>{{totalAmount}} {{unit}}</p>
     </div>
 </template>
 

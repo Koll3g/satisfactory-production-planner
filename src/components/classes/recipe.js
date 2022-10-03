@@ -21,7 +21,11 @@ export class recipe {
 
     static extractRecipes(unfilteredData){
         var FGRecipes = unfilteredData.filter((item) => item.NativeClass == "Class'/Script/FactoryGame.FGRecipe'")
-        var producableOnly = FGRecipes[0].Classes.filter((item) => ((item.mProducedIn != "") && (item.mProducedIn != "(/Game/FactoryGame/Equipment/BuildGun/BP_BuildGun.BP_BuildGun_C)")  && (item.mProducedIn != "(/Script/FactoryGame.FGBuildGun)")))
+        var producableOnly = FGRecipes[0].Classes.filter((item) => ((item.mProducedIn != "") 
+        && (item.mProducedIn != "(/Game/FactoryGame/Equipment/BuildGun/BP_BuildGun.BP_BuildGun_C)")  
+        && (item.mProducedIn != "(/Script/FactoryGame.FGBuildGun)")
+        && (item.mProducedIn != "(/Game/FactoryGame/Buildable/-Shared/WorkBench/BP_WorkshopComponent.BP_WorkshopComponent_C)")
+        ))
         return (producableOnly)
     }
 
@@ -29,9 +33,9 @@ export class recipe {
         let parsedRecipes = [] 
         FGRecipes.forEach((fgr) => {
             // let testString = "((ItemClass=BlueprintGeneratedClass'\"/Game/FactoryGame/Resource/RawResources/Sulfur/Desc_Sulfur.Desc_Sulfur_C\"',Amount=6),(ItemClass=BlueprintGeneratedClass'\"/Game/FactoryGame/Resource/Parts/AluminumPlate/Desc_AluminumPlate.Desc_AluminumPlate_C\"',Amount=7),(ItemClass=BlueprintGeneratedClass'\"/Game/FactoryGame/Resource/Parts/Plastic/Desc_Plastic.Desc_Plastic_C\"',Amount=8),(ItemClass=BlueprintGeneratedClass'\"/Game/FactoryGame/Resource/Parts/Wire/Desc_Wire.Desc_Wire_C\"',Amount=12))";
-            // https://regex101.com/r/YfrtQJ/2
+            // https://regex101.com/r/QFayWv/1
             // regex muss S{10} anstatt S{11} sein (komisch, ist aber so)
-            const regex1 = /(\.(Desc(\w*)))\S{10}(\d*)\)/g
+            const regex1 = /(\.((Desc|BP_EquipmentDescriptor)(\w*)))\S{10}(\d*)\)/g
             let matches1 = [];
             let match1;
             while ((match1 = regex1.exec(fgr.mIngredients)) !== null){
@@ -41,25 +45,26 @@ export class recipe {
             var ingredients = []
             matches1.forEach((match) => {
                 var id = match[2];
-                var amount = match[4];
+                var amount = match[5];
                 var material = this.materials.find((material) => material.id == id);
                 ingredients.push(new materialLineItem(amount, material));
             })
 
-            // https://regex101.com/r/YfrtQJ/2
+            // https://regex101.com/r/QFayWv/1
             // regex muss S{10} anstatt S{11} sein (komisch, ist aber so)
-            const regex2 = /(\.(Desc(\w*)))\S{10}(\d*)\)/g
+            // /(\.(Desc(\w*)))\S{10}(\d*)\)/g
+            const regex2 = /(\.((Desc|BP_EquipmentDescriptor)(\w*)))\S{10}(\d*)\)/g
             let matches2 = [];
             let match2;
-            while ((match2 = regex2.exec(fgr.mProducts)) !== null){
+            while ((match2 = regex2.exec(fgr.mProduct)) !== null){
                 matches2.push(match2)
                 match2 = null
             }    
             var products = []
             matches2.forEach((match) => {
-                var id = match[3];
+                var id = match[2];
                 var amount = match[5];
-                var material = materials.find((material) => material.id == id);
+                var material = this.materials.find((material) => material.id == id);
                 products.push(new materialLineItem(amount, material));
             })
             parsedRecipes.push(new recipe(fgr.ClassName, fgr.mDisplayName, ingredients, products, fgr.mManufacturingDuration))
@@ -73,9 +78,30 @@ export class recipe {
     }
 
     static extractMaterials(unfilteredData){
+        // var mixedMaterials = unfilteredData.filter((item) => item.NativeClass == "Class'/Script/FactoryGame.FGItemDescriptor'"
+        //     || item.NativeClass == "Class'/Script/FactoryGame.FGItemDescriptor'"
+        //     || item.NativeClass == "Class'/Script/FactoryGame.FGResourceDescriptor'"
+        //     || item.NativeClass == "Class'/Script/FactoryGame.FGItemDescriptorBiomass'"
+        //     || item.NativeClass == "Class'/Script/FactoryGame.FGAmmoTypeProjectile'"
+        //     || item.NativeClass == "Class'/Script/FactoryGame.FGItemDescriptorNuclearFuel'"
+        //     || item.NativeClass == "Class'/Script/FactoryGame.FGConsumableDescriptor'"
+        //     || item.NativeClass == "Class'/Script/FactoryGame.FGAmmoTypeSpreadshot'"
+        //     )
         var FGItemDescriptor = unfilteredData.filter((item) => item.NativeClass == "Class'/Script/FactoryGame.FGItemDescriptor'")
         var FGResourceDescriptor = unfilteredData.filter((item) => item.NativeClass == "Class'/Script/FactoryGame.FGResourceDescriptor'")
+        var FGItemDescriptorBiomass = unfilteredData.filter((item) => item.NativeClass == "Class'/Script/FactoryGame.FGItemDescriptorBiomass'")
+        var FGAmmoTypeProjectile = unfilteredData.filter((item) => item.NativeClass == "Class'/Script/FactoryGame.FGAmmoTypeProjectile'")
+        var FGItemDescriptorNuclearFuel = unfilteredData.filter((item) => item.NativeClass == "Class'/Script/FactoryGame.FGItemDescriptorNuclearFuel'")
+        var FGConsumableDescriptor = unfilteredData.filter((item) => item.NativeClass == "Class'/Script/FactoryGame.FGConsumableDescriptor'")
+        var FGAmmoTypeSpreadshot = unfilteredData.filter((item) => item.NativeClass == "Class'/Script/FactoryGame.FGAmmoTypeSpreadshot'")
+        var FGAmmoTypeInstantHit = unfilteredData.filter((item) => item.NativeClass == "Class'/Script/FactoryGame.FGAmmoTypeInstantHit'")
         var mixedMaterials = FGItemDescriptor[0].Classes.concat(FGResourceDescriptor[0].Classes);
+        var mixedMaterials = mixedMaterials.concat(FGItemDescriptorBiomass[0].Classes)
+        var mixedMaterials = mixedMaterials.concat(FGAmmoTypeProjectile[0].Classes)
+        var mixedMaterials = mixedMaterials.concat(FGItemDescriptorNuclearFuel[0].Classes)
+        var mixedMaterials = mixedMaterials.concat(FGConsumableDescriptor[0].Classes)
+        var mixedMaterials = mixedMaterials.concat(FGAmmoTypeSpreadshot[0].Classes)
+        var mixedMaterials = mixedMaterials.concat(FGAmmoTypeInstantHit[0].Classes)
         return (mixedMaterials)
     }
 

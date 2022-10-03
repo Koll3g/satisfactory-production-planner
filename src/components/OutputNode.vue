@@ -1,7 +1,14 @@
+<script setup>
+    const props = defineProps({
+  materialName: String,
+  totalAmount: Number
+})
+</script>
+
 <template>
     <div class="outputNode">
-        <p>Actual / Max</p>
-        <p>XXX / XXX</p>
+        <p>{{materialName}}</p>
+        <p>{{totalAmount}} / min</p>
     </div>
 </template>
 

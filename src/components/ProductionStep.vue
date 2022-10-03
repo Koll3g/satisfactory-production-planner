@@ -3,10 +3,12 @@
     import InputNode from './InputNode.vue';
     import OutputNode from './OutputNode.vue';
     import {recipe} from './classes/recipe.js';
+    import { uuid } from 'vue-uuid';
 
     const quantity = ref(1)
     const selectedRecipe = ref({})
     const recipes = ref(recipe.getRecipes())
+    const id = ref(uuid.v4())
     
     function calculateSpeed(materialLineItemAmount) {
         return quantity.value * parseInt(materialLineItemAmount) // / selectedRecipe.refs.duration * 60
@@ -18,6 +20,7 @@
     <div class="productionStep">
         <div>
             <input class="fullWidth" type="text" placeholder="Title"/>
+            <p>{{id}}</p>
         </div>
         <div class="flex-row">
             <div id="leftRow" class="flex-column">
@@ -44,8 +47,9 @@
                 </li>
             </div>
             <div class="flex-column, half-width">
-                <OutputNode></OutputNode>
-                <OutputNode></OutputNode>
+                <li style="list-style: none;" v-for="product in selectedRecipe.products">
+                    <OutputNode :materialName="product.material.name" :totalAmount="calculateSpeed(product.amount)"></OutputNode>
+                </li>
             </div>
         </div>
     </div>

@@ -12,6 +12,7 @@ import ProductionStep from './ProductionStep.vue';
         <div class="column-spacer"></div>
         <div class="productionStep">
             <ProductionStep class="productionStep"></ProductionStep>
+            <ProductionStep class="productionStep"></ProductionStep>
         </div>
     </div>
 </template>

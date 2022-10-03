@@ -1,7 +1,7 @@
 <script setup>
     const props = defineProps({
   materialName: String,
-  totalAmount: String
+  totalAmount: Number
 })
 </script>
 

@@ -63,10 +63,6 @@ function onDrop(evt, list) {
         flex-direction: column;
     }
 
-    productionStep {
-        /* width: 100px; */
-    }
-
     .drop-zone {
         background-color: red;
         min-width: 50px;

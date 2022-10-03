@@ -64,10 +64,7 @@ export class recipe {
                     console.log(id)
                 }
                 else{
-                    if(material.name == "Desc_LiquidOil_C"){
-                        let test = ""
-                    }
-                    if(material.form == "RF_LIQUID" && fgr.ClassName != "Recipe_CrudeOil_C"){
+                    if((material.form == "RF_LIQUID" || material.form == "RF_GAS") && fgr.ClassName != "Recipe_CrudeOil_C"){
                         amount = amount/1000
                     }
                     ingredients.push(new materialLineItem(amount, material));
@@ -93,10 +90,7 @@ export class recipe {
                     console.log(id)
                 }
                 else{
-                    if(material.name == "Desc_LiquidOil_C"){
-                        let test = ""
-                    }
-                    if(material.form == "RF_LIQUID" && fgr.ClassName != "Recipe_CrudeOil_C"){
+                    if((material.form == "RF_LIQUID" || material.form == "RF_GAS") && fgr.ClassName != "Recipe_CrudeOil_C"){
                         amount = amount/1000
                     }
                     products.push(new materialLineItem(amount, material));
@@ -216,7 +210,7 @@ export class material{
     }
 
     getUnit = () => {
-        if(this.form == "RF_LIQUID"){
+        if(this.form == "RF_LIQUID" || this.form == "RF_GAS"){
             return "m3/min"
         }
         else{

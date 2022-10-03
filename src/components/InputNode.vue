@@ -19,5 +19,6 @@
         margin: 5px;
         margin-left: 0px;
         padding: 5px;
+        white-space: nowrap;
     }
 </style>

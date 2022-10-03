@@ -20,5 +20,6 @@
         margin-right: 0px;
         padding: 5px;
         text-align: right;
+        white-space: nowrap;
     }
 </style>

@@ -33,26 +33,23 @@
 
 <template>
     <div class="productionStep">
-        <div>
-            <img src="./icons/drag.png" style="height:20px"/>
-            <p style="display:inline">{{id}}</p>
-        </div>
-        <div>
-            <label class="fullWidth">Recipe (selected Recipe: {{selectedRecipeId}})</label>
-            <select class="fullWidth" v-model="selectedRecipeId">
+        <div class="flex-row">
+            <img src="./icons/drag.png" style="height:20px; margin-right:5px"/>
+            <select class="fullWidth" v-model="selectedRecipeId" style="font-size:medium">
                 <option v-for="recipe in recipes" :value="recipe.id">
                     {{ recipe.name }}
                 </option>
             </select>
+            <img src="./icons/delete.png" style="height:20px; margin-left:5px"/>
         </div>
         <div class="flex-row">
-            <div id="leftRow" class="flex-column">
+            <div id="leftRow" class="flex-column,half-width"  style="margin-right:5px;margin-top:5px">
                 <label>Quantity:</label>
-                <input type="number" placeholder="1" v-model="quantity"/>
+                <input class="fullWidth" type="number" placeholder="1" v-model="quantity"/>
             </div>
-            <div id="rightRow" class="flex-column">
+            <div id="rightRow" class="flex-column,half-width" style="margin-left:5px;margin-top:5px">
                 <label>Efficency:</label>
-                <input type="number" placeholder="1"/>
+                <input class="fullWidth" type="number" placeholder="1" disabled="true"/>
             </div>
         </div>
 
@@ -63,7 +60,7 @@
                 </li>
             </div>
             <div class="flex-column, half-width">
-                <li style="list-style: none;" v-for="product in getSelectedRecipe(selectedRecipeId).products">
+                <li style="list-style: none; min-width: min-content" v-for="product in getSelectedRecipe(selectedRecipeId).products">
                     <OutputNode :materialName="product.material.name" :totalAmount="calculateSpeed(product.amount)" :unit="product.material.getUnit()"></OutputNode>
                 </li>
             </div>
@@ -76,6 +73,7 @@
         background-color: darkslategray;
         padding: 5px;
         margin: 5px;
+        width: 300px;
     }
 
     .flex-row {

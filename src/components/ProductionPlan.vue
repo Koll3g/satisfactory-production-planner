@@ -1,14 +1,32 @@
 <script setup>
 import { uuid } from 'vue-uuid';
 import ProductionStep from './ProductionStep.vue';
-import {ref} from 'vue'
+import {onUpdated, ref, reactive, onMounted} from 'vue'
 
-const productionSteps = ref([{id:1, listId: 1},{id:2, listId: 1},{id:3, listId:2},{id:4, listId:2}])
-const rowCount = 10
+// addDefaultProductionStep(1);
+const columnCount = 10
 
-function getListFromId(id){
-    return productionSteps.value.filter((productionStep) => productionStep.listId == id)
+const props = defineProps({
+        recipes: Array
+})
+
+const productionSteps = reactive([])
+
+// const productionSteps = ref([])
+
+function getColumnFromId(id){
+    return productionSteps.filter((productionStep) => productionStep.column == id)
 }
+
+onUpdated(() => {
+    console.log("update called", productionSteps)
+    saveToDisk()
+})
+
+onMounted(() => {
+    // localStorage.removeItem("PRODUCTION_PLAN_1");
+    getFromDisk().forEach((item) => productionSteps.push(item))
+})
 
 function startDrag(evt, item) {
     evt.dataTransfer.dropEffect = 'move'
@@ -16,25 +34,69 @@ function startDrag(evt, item) {
     evt.dataTransfer.setData('itemID', item.id)
 }
 
-function onDrop(evt, list) {
+function onDrop(evt, column) {
     const itemID = evt.dataTransfer.getData('itemID')
     const item = this.productionSteps.find((item) => item.id == itemID)
-    item.listId = list
+    item.column = column
 }
+
+function addDefaultProductionStep(column){
+   this.productionSteps.push(new productionStepProperties(uuid.v4(), props.recipes[0].id, 1, 1, column))
+   saveToDisk()
+}
+
+class productionStepProperties{
+    constructor(id, recipeId, efficency, quantity, column){
+        this.id = id;
+        this.recipeId = recipeId;
+        this.efficency = efficency;
+        this.quantity = quantity;
+        this.column = column;
+    }
+}
+
+function recipeOfChildChanged([newRecipeId, productionStepId]){
+    let index = productionSteps.findIndex((item) => item.id == productionStepId)
+    productionSteps[index].recipeId = newRecipeId;
+    console.log("recipe of child called, ", productionSteps)
+    saveToDisk()
+}
+
+function saveToDisk(){
+    let key = "PRODUCTION_PLAN_1"
+    let stringified = JSON.stringify(productionSteps);
+    localStorage.setItem(key, stringified);
+}
+
+function getFromDisk() {
+    let key = "PRODUCTION_PLAN_1"
+    let data = JSON.parse(localStorage.getItem(key))
+    return data
+    // if( localStorage.getItem(key) && item) {
+    //     const data = JSON.parse(localStorage.getItem(key))
+    //     return data[item]
+    // }
+    // else if(localStorage.getItem(key)) {
+    //    return localStorage.getItem(key)
+    // }
+};
 
 </script>
 
 <template>    
     <div class="flex-row" >
-        <div v-for="i in rowCount" class="flex-row">
+        <div v-for="i in columnCount" class="flex-row">
             <div class="drop-zone" @drop="onDrop($event, i)" @dragover.prevent @dragenter.prevent>
-                <div v-for="item in getListFromId(i)" 
+                <div v-for="item in getColumnFromId(i)" 
                     :key="item.id" 
                     class="drag-el" 
                     draggable 
                     @dragstart="startDrag($event, item)" 
                 >
-                    <ProductionStep :id="item.id"></ProductionStep>
+                    <ProductionStep :recipes="props.recipes" :productionStepProps="item" @recipeChanged="recipeOfChildChanged"></ProductionStep>
+                </div>
+                <div>
+                    <button @click="addDefaultProductionStep(i)">Add Production Step</button>
                 </div>
             </div>
             <div class="column-spacer"></div>
@@ -48,7 +110,7 @@ function onDrop(evt, list) {
     }
 
     .column-spacer {
-        background-color: blue;
+        /* background-color: darkgray; */
         width: 50px;
         height: 100px;
     }
@@ -64,13 +126,11 @@ function onDrop(evt, list) {
     }
 
     .drop-zone {
-        background-color: red;
+        background-color: var(--vt-c-divider-dark-1);
         min-width: 50px;
         padding: 10px;
     }
     .drag-el {
-        background-color: green;
-        padding: 5px;
         cursor: pointer;
     }
 </style>

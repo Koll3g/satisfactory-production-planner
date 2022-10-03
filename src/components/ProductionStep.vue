@@ -2,23 +2,24 @@
     import {ref} from 'vue'
     import InputNode from './InputNode.vue';
     import OutputNode from './OutputNode.vue';
-    import {recipe} from './classes/recipe.js';
-    import { uuid } from 'vue-uuid';
+    // import {recipe} from './classes/recipe.js';
+    // import { uuid } from 'vue-uuid';
 
-    const quantity = ref(1)
-    const recipes = ref(recipe.getRecipes())
-    const selectedRecipeId = ref("Recipe_IronPlate_C")
+    const quantity = ref(props.productionStepProps.quantity)
+    const efficency = ref(props.productionStepProps.efficency)
+    // const recipes = ref(recipe.getRecipes())
+    const selectedRecipeId = ref(props.productionStepProps.recipeId)
+
 
     const props = defineProps({
-        id: Number
+        // id: Number,
+        recipes: Array,
+        productionStepProps: Object
     })
 
+
     function getSelectedRecipe(recipeId){
-        // if(recipeId == ""){
-        //     selectedRecipeId = recipes.value[0].id
-        //     return recipes.value[0];
-        // }
-        let selectedRecipe = this.recipes.find((recipeX) => recipeX.id == recipeId)
+        let selectedRecipe = props.recipes.find((recipeX) => recipeX.id == recipeId)
         return selectedRecipe
     }
 
@@ -35,7 +36,7 @@
     <div class="productionStep">
         <div class="flex-row">
             <img src="./icons/drag.png" style="height:20px; margin-right:5px"/>
-            <select class="fullWidth" v-model="selectedRecipeId" style="font-size:medium">
+            <select class="fullWidth" v-model="selectedRecipeId" style="font-size:medium" @change="$emit('recipeChanged', [selectedRecipeId, props.productionStepProps.id])">
                 <option v-for="recipe in recipes" :value="recipe.id">
                     {{ recipe.name }}
                 </option>
@@ -70,10 +71,12 @@
 
 <style scoped>
     .productionStep {
-        background-color: darkslategray;
+        background-color: rgb(127, 159, 179);
         padding: 5px;
-        margin: 5px;
+        border: 2px solid black;
+        /* margin: 5px; */
         width: 300px;
+        margin-bottom: 5px;
     }
 
     .flex-row {

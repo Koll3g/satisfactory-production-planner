@@ -6,12 +6,24 @@
     import { uuid } from 'vue-uuid';
 
     const quantity = ref(1)
-    const selectedRecipe = ref({})
     const recipes = ref(recipe.getRecipes())
+    const selectedRecipeId = ref("Recipe_IronPlate_C")
     const id = ref(uuid.v4())
-    
+
+    function getSelectedRecipe(recipeId){
+        // if(recipeId == ""){
+        //     selectedRecipeId = recipes.value[0].id
+        //     return recipes.value[0];
+        // }
+        let selectedRecipe = this.recipes.find((recipeX) => recipeX.id == recipeId)
+        return selectedRecipe
+    }
+
     function calculateSpeed(materialLineItemAmount) {
-        return quantity.value * parseInt(materialLineItemAmount) // / selectedRecipe.refs.duration * 60
+        let selectedRecipe = this.getSelectedRecipe(this.selectedRecipeId);
+        let duration = selectedRecipe.duration;
+        let itemsPerMinute = quantity.value * parseInt(materialLineItemAmount) / duration * 60
+        return itemsPerMinute
     }
 </script>
 
@@ -33,21 +45,21 @@
             </div>
         </div>
         <div>
-            <label class="fullWidth">Recipe (selected Recipe: {{selectedRecipe}})</label>
-            <select class="fullWidth" v-model="selectedRecipe">
-                <option v-for="recipe in recipes" :value="recipe">
+            <label class="fullWidth">Recipe (selected Recipe: {{selectedRecipeId}})</label>
+            <select class="fullWidth" v-model="selectedRecipeId">
+                <option v-for="recipe in recipes" :value="recipe.id">
                     {{ recipe.name }}
                 </option>
             </select>
         </div>
         <div class="flex-row">
             <div class="flex-column, half-width">
-                <li style="list-style: none;" v-for="ingredient in selectedRecipe.ingredients">
+                <li style="list-style: none;" v-for="ingredient in getSelectedRecipe(selectedRecipeId).ingredients">
                     <InputNode :materialName="ingredient.material.name" :totalAmount="calculateSpeed(ingredient.amount)"></InputNode>
                 </li>
             </div>
             <div class="flex-column, half-width">
-                <li style="list-style: none;" v-for="product in selectedRecipe.products">
+                <li style="list-style: none;" v-for="product in getSelectedRecipe(selectedRecipeId).products">
                     <OutputNode :materialName="product.material.name" :totalAmount="calculateSpeed(product.amount)"></OutputNode>
                 </li>
             </div>

@@ -2,10 +2,10 @@
 import data from './data/docx.json'
 
 export class recipe {
-    constructor(ClassName, mDisplayName, mIngredients, mProduct, mManufacturingDuration){
+    constructor(ClassName, mDisplayName, mIngredients, mProduct, mManufactoringDuration){
         this.id = ClassName;
         this.name = mDisplayName;
-        this.duration = mManufacturingDuration;
+        this.duration = mManufactoringDuration;
         this.ingredients = mIngredients;
         this.products = mProduct;
     }
@@ -67,7 +67,7 @@ export class recipe {
                 var material = this.materials.find((material) => material.id == id);
                 products.push(new materialLineItem(amount, material));
             })
-            parsedRecipes.push(new recipe(fgr.ClassName, fgr.mDisplayName, ingredients, products, fgr.mManufacturingDuration))
+            parsedRecipes.push(new recipe(fgr.ClassName, fgr.mDisplayName, ingredients, products, parseFloat(fgr.mManufactoringDuration)))
         })
         return parsedRecipes;
     }

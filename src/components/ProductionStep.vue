@@ -8,7 +8,10 @@
     const quantity = ref(1)
     const recipes = ref(recipe.getRecipes())
     const selectedRecipeId = ref("Recipe_IronPlate_C")
-    const id = ref(uuid.v4())
+
+    const props = defineProps({
+        id: Number
+    })
 
     function getSelectedRecipe(recipeId){
         // if(recipeId == ""){
@@ -31,8 +34,16 @@
 <template>
     <div class="productionStep">
         <div>
-            <input class="fullWidth" type="text" placeholder="Title"/>
-            <p>{{id}}</p>
+            <img src="./icons/drag.png" style="height:20px"/>
+            <p style="display:inline">{{id}}</p>
+        </div>
+        <div>
+            <label class="fullWidth">Recipe (selected Recipe: {{selectedRecipeId}})</label>
+            <select class="fullWidth" v-model="selectedRecipeId">
+                <option v-for="recipe in recipes" :value="recipe.id">
+                    {{ recipe.name }}
+                </option>
+            </select>
         </div>
         <div class="flex-row">
             <div id="leftRow" class="flex-column">
@@ -44,14 +55,7 @@
                 <input type="number" placeholder="1"/>
             </div>
         </div>
-        <div>
-            <label class="fullWidth">Recipe (selected Recipe: {{selectedRecipeId}})</label>
-            <select class="fullWidth" v-model="selectedRecipeId">
-                <option v-for="recipe in recipes" :value="recipe.id">
-                    {{ recipe.name }}
-                </option>
-            </select>
-        </div>
+
         <div class="flex-row">
             <div class="flex-column, half-width">
                 <li style="list-style: none;" v-for="ingredient in getSelectedRecipe(selectedRecipeId).ingredients">

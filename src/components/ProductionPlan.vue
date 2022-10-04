@@ -71,6 +71,9 @@ function saveToDisk(){
 function getFromDisk() {
     let key = "PRODUCTION_PLAN_1"
     let data = JSON.parse(localStorage.getItem(key))
+    if(data == null){
+        data = []
+    }
     return data
     // if( localStorage.getItem(key) && item) {
     //     const data = JSON.parse(localStorage.getItem(key))

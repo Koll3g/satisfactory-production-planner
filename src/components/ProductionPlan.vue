@@ -36,7 +36,6 @@ onMounted(() => {
     if(data != null){
         data.forEach((item) => productionSteps.push(item))
     }
-
     // if(productionSteps.length == 0){
     //     this.productionSteps.push(new productionStepProperties(uuid.v4(), props.recipes[0].id, 1, 1, 1))
     // }

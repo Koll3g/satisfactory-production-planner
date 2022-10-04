@@ -1,7 +1,7 @@
 <script setup>
 import { uuid } from 'vue-uuid';
 import ProductionStep from './ProductionStep.vue';
-import {onUpdated, ref, reactive, onMounted} from 'vue'
+import {onUpdated, ref, reactive, onMounted, defineProps} from 'vue'
 
 const columnCount = 10
 
@@ -37,7 +37,8 @@ onMounted(() => {
         data.forEach((item) => productionSteps.push(item))
     }
     else{
-        productionSteps.push(new productionStepProperties(uuid.v4(), props.recipes[0].id, 1, 1, 1))
+        // productionSteps.push(new productionStepProperties(uuid.v4(), props.recipes[0].id, 1, 1, 1))
+        productionSteps.push(new productionStepProperties(uuid.v4(), "Recipe_AILimiter_C", 1, 1, 1))
     }
     // if(productionSteps.length == 0){
     //     this.productionSteps.push(new productionStepProperties(uuid.v4(), props.recipes[0].id, 1, 1, 1))

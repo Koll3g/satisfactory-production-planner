@@ -1,12 +1,12 @@
 <script setup>
-    import {ref} from 'vue'
+    import {ref, defineProps} from 'vue'
     import InputNode from './InputNode.vue';
     import OutputNode from './OutputNode.vue';
 
     const quantity = ref(props.productionStepProps.quantity)
     const efficency = ref(props.productionStepProps.efficency)
     const selectedRecipeId = ref(props.productionStepProps.recipeId)
-
+    // const selectedRecipeId = ref("Recipe_AILimiter_C")
 
     const props = defineProps({
         recipes: Array,
@@ -15,7 +15,18 @@
 
 
     function getSelectedRecipe(recipeId){
+        console.log("get selected recipe called, id: ",recipeId)
+        if(props == null){
+            console.log("props null")
+        }
+        if(props.recipes == null){
+            console.log("recipes null")
+        }
         let selectedRecipe = props.recipes.find((recipeX) => recipeX.id == recipeId)
+        console.log("selectedRecipe: ", selectedRecipe)
+        if(selectedRecipe == null){
+            console.log("recipe not found - recipe-id: ", recipeId)
+        }
         return selectedRecipe
     }
 

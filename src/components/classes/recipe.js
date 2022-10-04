@@ -1,4 +1,3 @@
-// import data from './data/mdocs.json'
 import data from './data/docx.json'
 
 export class recipe {

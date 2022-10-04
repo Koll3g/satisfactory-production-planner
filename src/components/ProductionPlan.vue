@@ -9,6 +9,16 @@ const props = defineProps({
         recipes: Array
 })
 
+class productionStepProperties{
+    constructor(id, recipeId, efficency, quantity, column){
+        this.id = id;
+        this.recipeId = recipeId;
+        this.efficency = efficency;
+        this.quantity = quantity;
+        this.column = column;
+    }
+}
+
 const productionSteps = reactive([])
 
 function getColumnFromId(id){
@@ -22,7 +32,14 @@ onUpdated(() => {
 
 onMounted(() => {
     // localStorage.removeItem("PRODUCTION_PLAN_1");
-    getFromDisk().forEach((item) => productionSteps.push(item))
+    let data = getFromDisk()
+    if(data != null){
+        data.forEach((item) => productionSteps.push(item))
+    }
+
+    // if(productionSteps.length == 0){
+    //     this.productionSteps.push(new productionStepProperties(uuid.v4(), props.recipes[0].id, 1, 1, 1))
+    // }
 })
 
 function startDrag(evt, item) {
@@ -42,15 +59,7 @@ function addDefaultProductionStep(column){
    saveToDisk()
 }
 
-class productionStepProperties{
-    constructor(id, recipeId, efficency, quantity, column){
-        this.id = id;
-        this.recipeId = recipeId;
-        this.efficency = efficency;
-        this.quantity = quantity;
-        this.column = column;
-    }
-}
+
 
 function recipeOfChildChanged([newRecipeId, productionStepId]){
     let index = productionSteps.findIndex((item) => item.id == productionStepId)
@@ -68,9 +77,9 @@ function saveToDisk(){
 function getFromDisk() {
     let key = "PRODUCTION_PLAN_1"
     let data = JSON.parse(localStorage.getItem(key))
-    if(data == null){
-        data = []
-    }
+    // if(data == null){
+    //     data = []
+    // }
     return data
 };
 

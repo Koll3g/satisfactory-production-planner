@@ -3,7 +3,6 @@ import { uuid } from 'vue-uuid';
 import ProductionStep from './ProductionStep.vue';
 import {onUpdated, ref, reactive, onMounted} from 'vue'
 
-// addDefaultProductionStep(1);
 const columnCount = 10
 
 const props = defineProps({
@@ -11,8 +10,6 @@ const props = defineProps({
 })
 
 const productionSteps = reactive([])
-
-// const productionSteps = ref([])
 
 function getColumnFromId(id){
     return productionSteps.filter((productionStep) => productionStep.column == id)
@@ -75,13 +72,6 @@ function getFromDisk() {
         data = []
     }
     return data
-    // if( localStorage.getItem(key) && item) {
-    //     const data = JSON.parse(localStorage.getItem(key))
-    //     return data[item]
-    // }
-    // else if(localStorage.getItem(key)) {
-    //    return localStorage.getItem(key)
-    // }
 };
 
 </script>
@@ -113,7 +103,6 @@ function getFromDisk() {
     }
 
     .column-spacer {
-        /* background-color: darkgray; */
         width: 50px;
         height: 100px;
     }

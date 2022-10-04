@@ -2,17 +2,13 @@
     import {ref} from 'vue'
     import InputNode from './InputNode.vue';
     import OutputNode from './OutputNode.vue';
-    // import {recipe} from './classes/recipe.js';
-    // import { uuid } from 'vue-uuid';
 
     const quantity = ref(props.productionStepProps.quantity)
     const efficency = ref(props.productionStepProps.efficency)
-    // const recipes = ref(recipe.getRecipes())
     const selectedRecipeId = ref(props.productionStepProps.recipeId)
 
 
     const props = defineProps({
-        // id: Number,
         recipes: Array,
         productionStepProps: Object
     })
@@ -74,7 +70,6 @@
         background-color: rgb(127, 159, 179);
         padding: 5px;
         border: 2px solid black;
-        /* margin: 5px; */
         width: 300px;
         margin-bottom: 5px;
     }

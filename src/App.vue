@@ -4,7 +4,7 @@ import {recipe} from './components/classes/recipe.js';
 
 const recipes = recipe.getRecipes()
 </script>
-<!-- test -->
+
 <template>
   <ProductionPlan :recipes="recipes"></ProductionPlan>
 </template>

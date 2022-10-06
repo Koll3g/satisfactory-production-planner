@@ -1,7 +1,7 @@
 <script setup>
 import { uuid } from 'vue-uuid';
 import ProductionStep from './ProductionStep.vue';
-import {onUpdated, ref, reactive, onMounted, defineProps} from 'vue'
+import {onUpdated, ref, onMounted} from 'vue'
 
 const columnCount = 10
 
@@ -36,13 +36,6 @@ onMounted(() => {
     if(data != null){
         data.forEach((item) => productionSteps.value.push(item))
     }
-    else{
-        productionSteps.value.push(new productionStepProperties(uuid.v4(), props.recipes[0].id, 1, 1, 1))
-        // productionSteps.push(new productionStepProperties(uuid.v4(), "Recipe_AILimiter_C", 1, 1, 1))
-    }
-    // if(productionSteps.length == 0){
-    //     this.productionSteps.push(new productionStepProperties(uuid.v4(), props.recipes[0].id, 1, 1, 1))
-    // }
 })
 
 function startDrag(evt, item) {
@@ -58,16 +51,15 @@ function onDrop(evt, column) {
 }
 
 function addDefaultProductionStep(column){
-   productionSteps.value.push(new productionStepProperties(uuid.v4(), props.recipes[0].id, 1, 1, column))
-   saveToDisk()
+    productionSteps.value.push(new productionStepProperties(uuid.v4(), props.recipes[0].id, 1, 1, column))
 }
 
 
 
 function recipeOfChildChanged([newRecipeId, productionStepId]){
+    // console.log("recipe of child called, ", productionSteps)
     let index = productionSteps.value.findIndex((item) => item.id == productionStepId)
     productionSteps.value[index].recipeId = newRecipeId;
-    console.log("recipe of child called, ", productionSteps)
     saveToDisk()
 }
 
@@ -80,24 +72,15 @@ function saveToDisk(){
 function getFromDisk() {
     let key = "PRODUCTION_PLAN_1"
     let data = JSON.parse(localStorage.getItem(key))
-    // if(data == null){
-    //     data = []
-    // }
     return data
 };
-
 </script>
 
 <template>    
     <div class="flex-row" >
         <div v-for="i in columnCount" class="flex-row">
             <div class="drop-zone" @drop="onDrop($event, i)" @dragover.prevent @dragenter.prevent>
-                <div v-for="item in getColumnFromId(i)" 
-                    :key="item.id" 
-                    class="drag-el" 
-                    draggable 
-                    @dragstart="startDrag($event, item)" 
-                >
+                <div v-for="item in getColumnFromId(i)" :key="item.id" class="drag-el" draggable @dragstart="startDrag($event, item)" >
                     <ProductionStep :recipes="props.recipes" :productionStepProps="item" @recipeChanged="recipeOfChildChanged"></ProductionStep>
                 </div>
                 <div>

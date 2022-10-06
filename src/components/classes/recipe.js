@@ -1,5 +1,8 @@
 import data from './data/docx.json'
 
+const recipeList = []
+const recipeDictionary = {}
+
 export class recipe {
     constructor(ClassName, mDisplayName, mIngredients, mProduct, mManufactoringDuration){
         this.id = ClassName;
@@ -9,13 +12,29 @@ export class recipe {
         this.products = mProduct;
     }
 
-    static materials = [] 
+    static materials = []
+
+    static generateRecipes(){
+        this.fillMaterialList(data);
+        let rawRecipes = this.extractRecipes(data);
+        let parsedRecipesResponse = this.parseRecipes(rawRecipes);
+        let sortedRecipes = this.sortRecipes(parsedRecipesResponse)
+        recipeList = sortedRecipes
+        mapRecipes()
+    }
+
+    static mapRecipes(){
+        for(i=0; i<recipeList.length; i++){
+            recipeDictionary[recipeList[i].id] = recipeList[i]
+        }
+    }
 
     static getRecipes(){
+        // console.log("generating recipe list from json file")
         this.fillMaterialList(data);
-        var rawRecipes = this.extractRecipes(data);
-        var parsedRecipesResponse = this.parseRecipes(rawRecipes);
-        var sortedRecipes = this.sortRecipes(parsedRecipesResponse)
+        let rawRecipes = this.extractRecipes(data);
+        let parsedRecipesResponse = this.parseRecipes(rawRecipes);
+        let sortedRecipes = this.sortRecipes(parsedRecipesResponse)
         return sortedRecipes
     }
 
@@ -32,8 +51,8 @@ export class recipe {
     }
 
     static extractRecipes(unfilteredData){
-        var FGRecipes = unfilteredData.filter((item) => item.NativeClass == "Class'/Script/FactoryGame.FGRecipe'")
-        var producableOnly = FGRecipes[0].Classes.filter((item) => ((item.mProducedIn != "") 
+        let FGRecipes = unfilteredData.filter((item) => item.NativeClass == "Class'/Script/FactoryGame.FGRecipe'")
+        let producableOnly = FGRecipes[0].Classes.filter((item) => ((item.mProducedIn != "") 
         && (item.mProducedIn != "(/Game/FactoryGame/Equipment/BuildGun/BP_BuildGun.BP_BuildGun_C)")  
         && (item.mProducedIn != "(/Script/FactoryGame.FGBuildGun)")
         && (item.mProducedIn != "(/Game/FactoryGame/Buildable/-Shared/WorkBench/BP_WorkshopComponent.BP_WorkshopComponent_C)")
@@ -54,11 +73,11 @@ export class recipe {
                 matches1.push(match1)
                 match1 = null
             }       
-            var ingredients = []
+            let ingredients = []
             matches1.forEach((match) => {
-                var id = match[2];
-                var amount = match[5];
-                var material = this.materials.find((material) => material.id == id);
+                let id = match[2];
+                let amount = match[5];
+                let material = this.materials.find((material) => material.id == id);
                 if(material == null){
                     console.log(id)
                 }
@@ -80,11 +99,11 @@ export class recipe {
                 matches2.push(match2)
                 match2 = null
             }    
-            var products = []
+            let products = []
             matches2.forEach((match) => {
-                var id = match[2];
-                var amount = match[5];
-                var material = this.materials.find((material) => material.id == id);
+                let id = match[2];
+                let amount = match[5];
+                let material = this.materials.find((material) => material.id == id);
                 if(material == null){
                     console.log(id)
                 }
@@ -101,75 +120,35 @@ export class recipe {
     }
 
     static fillMaterialList(unfilteredData){
-        var mixedMaterials = this.extractMaterials(unfilteredData);
+        let mixedMaterials = this.extractMaterials(unfilteredData);
         this.materials = this.parseMaterials(mixedMaterials);
     }
 
     static extractMaterials(unfilteredData){
-        // var mixedMaterials = unfilteredData.filter((item) => item.NativeClass == "Class'/Script/FactoryGame.FGItemDescriptor'"
-        //     || item.NativeClass == "Class'/Script/FactoryGame.FGItemDescriptor'"
-        //     || item.NativeClass == "Class'/Script/FactoryGame.FGResourceDescriptor'"
-        //     || item.NativeClass == "Class'/Script/FactoryGame.FGItemDescriptorBiomass'"
-        //     || item.NativeClass == "Class'/Script/FactoryGame.FGAmmoTypeProjectile'"
-        //     || item.NativeClass == "Class'/Script/FactoryGame.FGItemDescriptorNuclearFuel'"
-        //     || item.NativeClass == "Class'/Script/FactoryGame.FGConsumableDescriptor'"
-        //     || item.NativeClass == "Class'/Script/FactoryGame.FGAmmoTypeSpreadshot'"
-        //     )
-        var FGItemDescriptor = unfilteredData.filter((item) => item.NativeClass == "Class'/Script/FactoryGame.FGItemDescriptor'")
-        var FGResourceDescriptor = unfilteredData.filter((item) => item.NativeClass == "Class'/Script/FactoryGame.FGResourceDescriptor'")
-        var FGItemDescriptorBiomass = unfilteredData.filter((item) => item.NativeClass == "Class'/Script/FactoryGame.FGItemDescriptorBiomass'")
-        var FGAmmoTypeProjectile = unfilteredData.filter((item) => item.NativeClass == "Class'/Script/FactoryGame.FGAmmoTypeProjectile'")
-        var FGItemDescriptorNuclearFuel = unfilteredData.filter((item) => item.NativeClass == "Class'/Script/FactoryGame.FGItemDescriptorNuclearFuel'")
-        var FGConsumableDescriptor = unfilteredData.filter((item) => item.NativeClass == "Class'/Script/FactoryGame.FGConsumableDescriptor'")
-        var FGAmmoTypeSpreadshot = unfilteredData.filter((item) => item.NativeClass == "Class'/Script/FactoryGame.FGAmmoTypeSpreadshot'")
-        var FGAmmoTypeInstantHit = unfilteredData.filter((item) => item.NativeClass == "Class'/Script/FactoryGame.FGAmmoTypeInstantHit'")
-        var FGEquipmentDescriptor = unfilteredData.filter((item) => item.NativeClass == "Class'/Script/FactoryGame.FGEquipmentDescriptor'")
-        var mixedMaterials = FGItemDescriptor[0].Classes.concat(FGResourceDescriptor[0].Classes);
-        var mixedMaterials = mixedMaterials.concat(FGItemDescriptorBiomass[0].Classes)
-        var mixedMaterials = mixedMaterials.concat(FGAmmoTypeProjectile[0].Classes)
-        var mixedMaterials = mixedMaterials.concat(FGItemDescriptorNuclearFuel[0].Classes)
-        var mixedMaterials = mixedMaterials.concat(FGConsumableDescriptor[0].Classes)
-        var mixedMaterials = mixedMaterials.concat(FGAmmoTypeSpreadshot[0].Classes)
-        var mixedMaterials = mixedMaterials.concat(FGAmmoTypeInstantHit[0].Classes)
-        var mixedMaterials = mixedMaterials.concat(FGEquipmentDescriptor[0].Classes)
+        let FGItemDescriptor = unfilteredData.filter((item) => item.NativeClass == "Class'/Script/FactoryGame.FGItemDescriptor'")
+        let FGResourceDescriptor = unfilteredData.filter((item) => item.NativeClass == "Class'/Script/FactoryGame.FGResourceDescriptor'")
+        let FGItemDescriptorBiomass = unfilteredData.filter((item) => item.NativeClass == "Class'/Script/FactoryGame.FGItemDescriptorBiomass'")
+        let FGAmmoTypeProjectile = unfilteredData.filter((item) => item.NativeClass == "Class'/Script/FactoryGame.FGAmmoTypeProjectile'")
+        let FGItemDescriptorNuclearFuel = unfilteredData.filter((item) => item.NativeClass == "Class'/Script/FactoryGame.FGItemDescriptorNuclearFuel'")
+        let FGConsumableDescriptor = unfilteredData.filter((item) => item.NativeClass == "Class'/Script/FactoryGame.FGConsumableDescriptor'")
+        let FGAmmoTypeSpreadshot = unfilteredData.filter((item) => item.NativeClass == "Class'/Script/FactoryGame.FGAmmoTypeSpreadshot'")
+        let FGAmmoTypeInstantHit = unfilteredData.filter((item) => item.NativeClass == "Class'/Script/FactoryGame.FGAmmoTypeInstantHit'")
+        let FGEquipmentDescriptor = unfilteredData.filter((item) => item.NativeClass == "Class'/Script/FactoryGame.FGEquipmentDescriptor'")
+        let mixedMaterials = FGItemDescriptor[0].Classes.concat(FGResourceDescriptor[0].Classes);
+        mixedMaterials = mixedMaterials.concat(FGItemDescriptorBiomass[0].Classes)
+        mixedMaterials = mixedMaterials.concat(FGAmmoTypeProjectile[0].Classes)
+        mixedMaterials = mixedMaterials.concat(FGItemDescriptorNuclearFuel[0].Classes)
+        mixedMaterials = mixedMaterials.concat(FGConsumableDescriptor[0].Classes)
+        mixedMaterials = mixedMaterials.concat(FGAmmoTypeSpreadshot[0].Classes)
+        mixedMaterials = mixedMaterials.concat(FGAmmoTypeInstantHit[0].Classes)
+        mixedMaterials = mixedMaterials.concat(FGEquipmentDescriptor[0].Classes)
         return (mixedMaterials)
     }
 
     static parseMaterials(mixedMaterials){
-        var materials = []
+        let materials = []
         mixedMaterials.forEach((mixedMaterial) => materials.push(new material(mixedMaterial.ClassName, mixedMaterial.mDisplayName, mixedMaterial.mForm)))
         return materials;
-    }
-
-
-
-    static getTestRecipes(){
-        console.log(data)
-
-        var testRecipe1 = new recipe(
-            1, 
-            "Coated Iron Plate", 
-            12, 
-            new materialInput([
-                new materialLineItem(10, new material("Iron Ingot", "url")), 
-                new materialLineItem(2, new material("Plastic", "url"))
-            ]), 
-            new materialOutput([
-                new materialLineItem(15, new material("Iron Plate", "url"))
-            ])
-        );
-        var testRecipe2 = new recipe(
-            2, 
-            "Iron Plate", 
-            6, 
-            new materialInput([
-                new materialLineItem(3, new material("Iron Ingot", "url")), 
-            ]), 
-            new materialOutput([
-                new materialLineItem(2, new material("Iron Plate", "url"))
-            ])
-        );
-        return [testRecipe1, testRecipe2];
     }
 }
 

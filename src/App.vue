@@ -48,15 +48,15 @@ const recipes = recipe.getRecipes()
   }
 
   .bm-menu{
-    grid-column-start: 1;
-    grid-column-end: 2;
+    grid-column-start: 1!important;
+    grid-column-end: 2!important;
   }
   .bm-burger-button {
-    position: fixed;
-    width: 18px;
-    height: 15px;
-    left: 10px;
-    top: 10px;
-    cursor: pointer;
+    position: fixed!important;
+    width: 18px!important;
+    height: 15px!important;
+    left: 10px!important;
+    top: 10px!important;
+    cursor: pointer!important;
   }
 </style>

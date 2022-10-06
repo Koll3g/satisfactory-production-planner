@@ -9,7 +9,7 @@
 <template>
     <div class="inputNode">
         <p>{{materialName}}</p>
-        <p>{{totalAmount}} {{unit}}</p>
+        <p>{{Math.round((totalAmount + Number.EPSILON) * 1000) / 1000}} {{unit}}</p>
     </div>
 </template>
 

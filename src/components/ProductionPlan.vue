@@ -134,6 +134,7 @@ function getFromLocalStorage() {
         background-color: var(--vt-c-divider-dark-1);
         min-width: 50px;
         padding: 10px;
+        height: 100vh;
     }
     .drag-el {
         cursor: pointer;

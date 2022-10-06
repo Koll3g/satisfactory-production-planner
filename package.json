@@ -8,7 +8,9 @@
   },
   "dependencies": {
     "vue": "^3.2.38",
+    "vue-burger-menu": "^2.0.5",
     "vue-uuid": "^3.0.0",
+    "vue3-burger-menu": "^1.1.1",
     "vuedraggable": "^2.24.3"
   },
   "devDependencies": {

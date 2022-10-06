@@ -4,6 +4,7 @@ import ProductionStep from './ProductionStep.vue';
 import {onUpdated, ref, onMounted} from 'vue'
 
 const columnCount = 10
+const localStorageVersion = "v1"
 
 const props = defineProps({
         recipes: Array
@@ -27,14 +28,14 @@ function getColumnFromId(id){
 
 onUpdated(() => {
     console.log("update called", productionSteps.value)
-    saveToDisk()
+    saveToLocalStorage()
 })
 
 onMounted(() => {
     // localStorage.removeItem("PRODUCTION_PLAN_1");
-    let data = getFromDisk()
+    let data = getFromLocalStorage()
     if(data != null){
-        data.forEach((item) => productionSteps.value.push(item))
+        data.productionSteps.forEach((item) => productionSteps.value.push(item))
     }
 })
 
@@ -67,20 +68,30 @@ function recipeOfChildChanged([newRecipeId, productionStepId]){
     // console.log("recipe of child called, ", productionSteps)
     let index = productionSteps.value.findIndex((item) => item.id == productionStepId)
     productionSteps.value[index].recipeId = newRecipeId;
-    saveToDisk()
+    saveToLocalStorage()
 }
 
-function saveToDisk(){
+function saveToLocalStorage(){
+    //WHEN MAKING CHANGES CONSIDER INCREASING VERSION!!
+    let storageItem = { version: localStorageVersion, productionSteps: productionSteps.value }    
     let key = "PRODUCTION_PLAN_1"
-    let stringified = JSON.stringify(productionSteps.value);
+    // let stringified = JSON.stringify(productionSteps.value);
+    let stringified = JSON.stringify(storageItem)
     localStorage.setItem(key, stringified);
 }
 
-function getFromDisk() {
+function getFromLocalStorage() {
+    //WHEN MAKING CHANGES CONSIDER INCREASING VERSION!!
     let key = "PRODUCTION_PLAN_1"
     let data = JSON.parse(localStorage.getItem(key))
+
+    if(data.version == null){
+        data = {version: "v1", productionSteps: data}
+    }
+
     return data
-};
+}
+
 </script>
 
 <template>    

@@ -19,14 +19,14 @@ class productionStepProperties{
     }
 }
 
-const productionSteps = reactive([])
+const productionSteps = ref([])
 
 function getColumnFromId(id){
-    return productionSteps.filter((productionStep) => productionStep.column == id)
+    return productionSteps.value.filter((productionStep) => productionStep.column == id)
 }
 
 onUpdated(() => {
-    console.log("update called", productionSteps)
+    console.log("update called", productionSteps.value)
     saveToDisk()
 })
 
@@ -34,11 +34,11 @@ onMounted(() => {
     // localStorage.removeItem("PRODUCTION_PLAN_1");
     let data = getFromDisk()
     if(data != null){
-        data.forEach((item) => productionSteps.push(item))
+        data.forEach((item) => productionSteps.value.push(item))
     }
     else{
-        // productionSteps.push(new productionStepProperties(uuid.v4(), props.recipes[0].id, 1, 1, 1))
-        productionSteps.push(new productionStepProperties(uuid.v4(), "Recipe_AILimiter_C", 1, 1, 1))
+        productionSteps.value.push(new productionStepProperties(uuid.v4(), props.recipes[0].id, 1, 1, 1))
+        // productionSteps.push(new productionStepProperties(uuid.v4(), "Recipe_AILimiter_C", 1, 1, 1))
     }
     // if(productionSteps.length == 0){
     //     this.productionSteps.push(new productionStepProperties(uuid.v4(), props.recipes[0].id, 1, 1, 1))
@@ -53,27 +53,27 @@ function startDrag(evt, item) {
 
 function onDrop(evt, column) {
     const itemID = evt.dataTransfer.getData('itemID')
-    const item = this.productionSteps.find((item) => item.id == itemID)
+    const item = productionSteps.value.find((item) => item.id == itemID)
     item.column = column
 }
 
 function addDefaultProductionStep(column){
-   this.productionSteps.push(new productionStepProperties(uuid.v4(), props.recipes[0].id, 1, 1, column))
+   productionSteps.value.push(new productionStepProperties(uuid.v4(), props.recipes[0].id, 1, 1, column))
    saveToDisk()
 }
 
 
 
 function recipeOfChildChanged([newRecipeId, productionStepId]){
-    let index = productionSteps.findIndex((item) => item.id == productionStepId)
-    productionSteps[index].recipeId = newRecipeId;
+    let index = productionSteps.value.findIndex((item) => item.id == productionStepId)
+    productionSteps.value[index].recipeId = newRecipeId;
     console.log("recipe of child called, ", productionSteps)
     saveToDisk()
 }
 
 function saveToDisk(){
     let key = "PRODUCTION_PLAN_1"
-    let stringified = JSON.stringify(productionSteps);
+    let stringified = JSON.stringify(productionSteps.value);
     localStorage.setItem(key, stringified);
 }
 

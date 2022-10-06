@@ -15,7 +15,6 @@
 
 
     function getSelectedRecipe(recipeId){
-        console.log("get selected recipe called, id: ",recipeId)
         if(props == null){
             console.log("props null")
         }
@@ -23,7 +22,6 @@
             console.log("recipes null")
         }
         let selectedRecipe = props.recipes.find((recipeX) => recipeX.id == recipeId)
-        console.log("selectedRecipe: ", selectedRecipe)
         if(selectedRecipe == null){
             console.log("recipe not found - recipe-id: ", recipeId)
         }
@@ -31,7 +29,7 @@
     }
 
     function calculateSpeed(materialLineItemAmount) {
-        let selectedRecipe = this.getSelectedRecipe(this.selectedRecipeId);
+        let selectedRecipe = getSelectedRecipe(selectedRecipeId.value);
         let duration = selectedRecipe.duration;
         let itemsPerMinute = quantity.value * parseInt(materialLineItemAmount) / duration * 60
         return itemsPerMinute

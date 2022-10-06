@@ -1,6 +1,5 @@
 # satisfactory-production-planner
-
-This template should help get you started developing with Vue 3 in Vite.
+[Kanban Board](https://trello.com/b/T2sT3wWp/satisfactory-production-planner)
 
 ## Recommended IDE Setup
 

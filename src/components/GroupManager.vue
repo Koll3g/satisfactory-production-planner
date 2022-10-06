@@ -1,9 +1,15 @@
 <script setup>
-    import {ref} from 'vue'
+    import {onMounted, ref, nextTick} from 'vue'
 
     const groups = ref([])
     const newGroupName = ref("")
     const newGroupColor = ref("#000000")
+
+    const props = defineProps({
+        groups: Array
+    })
+
+    const emit = defineEmits(['groupsChanged'])
 
     function addOrModifyGroup(){
         if(groups.value.find((group) => group.name == newGroupName.value) != null){
@@ -15,6 +21,7 @@
         }
         newGroupName.value = ""
         newGroupColor.value = "#000000"
+        emit('groupsChanged',[groups.value])
     }
 
     function addOrModifyTextButton(){
@@ -29,6 +36,7 @@
     function deleteGroup(groupName){
         let i = groups.value.findIndex((group) => group.name == groupName)
         groups.value.splice(i,1)
+        emit('groupsChanged',[groups.value])
     }
 
     class Group{
@@ -37,6 +45,13 @@
             this.color = color
         }
     }
+
+    onMounted(() => {
+        nextTick(() => {
+            props.groups.forEach((group) => groups.value.push(group))
+        })
+
+    })
 </script>
 
 <template>

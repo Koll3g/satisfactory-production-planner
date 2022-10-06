@@ -24,22 +24,29 @@ class productionStepProperties{
 }
 
 const productionSteps = ref([])
+const groups = ref([])
 
 function getColumnFromId(id){
     return productionSteps.value.filter((productionStep) => productionStep.column == id)
 }
 
 onUpdated(() => {
-    console.log("update called", productionSteps.value, props.groups)
-    saveToLocalStorage(productionSteps.value, props.groups)
+    console.log("update called", productionSteps.value, groups.value)
+    saveToLocalStorage(productionSteps.value, groups.value)
 })
 
 onMounted(() => {
     // localStorage.removeItem("PRODUCTION_PLAN_1");
     let data = getFromLocalStorage()
-    if(data != null){
+    if(data.productionSteps != null){
         data.productionSteps.forEach((item) => productionSteps.value.push(item))
     }
+    if(data.groups != null){
+      data.groups.forEach((item) => groups.value.push(item))
+    }
+    // else{
+    //   groups.value.push({name:"Group1", color:"#000000"})
+    // }
 })
 
 function startDrag(evt, item) {
@@ -71,7 +78,13 @@ function recipeOfChildChanged([newRecipeId, productionStepId]){
     // console.log("recipe of child called, ", productionSteps)
     let index = productionSteps.value.findIndex((item) => item.id == productionStepId)
     productionSteps.value[index].recipeId = newRecipeId;
-    saveToLocalStorage(productionSteps.value, props.groups)
+    saveToLocalStorage(productionSteps.value, groups.value)
+}
+
+function groupsChangedHandler([newGroups]){
+  console.log("groupsChangedHandler called", newGroups)
+  groups.value = newGroups
+  saveToLocalStorage(productionSteps.value, groups.value)
 }
 
 </script>
@@ -81,7 +94,7 @@ function recipeOfChildChanged([newRecipeId, productionStepId]){
     <div id="main-content">
       <div id="app">
         <Slide>
-          <GroupManager ></GroupManager>
+          <GroupManager :groups="groups" @groupsChanged="groupsChangedHandler"></GroupManager>
         </Slide>
         <main id="page-wrap">
             <div class="flex-row" >

@@ -13,14 +13,16 @@ export function getFromLocalStorage() {
     let key = "PRODUCTION_PLAN_1"
     let data = JSON.parse(localStorage.getItem(key))
 
-    // console.log("version", window.$localStorageVersion)
+    console.log("loading data: ", data)
 
     if(data.version == null){
         data = {version: "v1", productionSteps: data}
+        console.log("converted data to v1: ", data)
     }
     if(data.version == "v1"){
         data.version = "v2"
         data.groups = []
+        console.log("converted data to v2: ", data)
     }
 
     return data

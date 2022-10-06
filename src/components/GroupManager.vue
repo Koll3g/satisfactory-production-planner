@@ -64,7 +64,7 @@
     </div>
     <div class="column-spacer"></div>
     <div v-for="group in groups">
-        <h3 :style="{color: group.color}">{{group.name}}</h3>
+        <h3 :style="{color: group.color}" @click="newGroupName = group.name">{{group.name}}</h3>
         <img src="./icons/delete.png" class="delete-icon" @click="deleteGroup(group.name)"/>
     </div>
 </template>

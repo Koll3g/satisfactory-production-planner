@@ -6,9 +6,8 @@ import GroupManager from './components/GroupManager.vue'
 import {ref, VueElement} from 'vue'
 
 const recipes = recipe.getRecipes()
+const groups = ref([])
 
-window.$localStorageVersion = "v1"
-window.$appname = "satisfactory-production-planner"
 
 </script>
 
@@ -18,10 +17,10 @@ window.$appname = "satisfactory-production-planner"
     <div id="main-content">
       <div id="app">
         <Slide>
-          <GroupManager></GroupManager>
+          <GroupManager ></GroupManager>
         </Slide>
         <main id="page-wrap">
-          <ProductionPlan :recipes="recipes"></ProductionPlan>
+          <ProductionPlan :recipes="recipes" :groups="groups.value"></ProductionPlan>
         </main>
       </div>
     </div>

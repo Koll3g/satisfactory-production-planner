@@ -54,7 +54,14 @@ function addDefaultProductionStep(column){
     productionSteps.value.push(new productionStepProperties(uuid.v4(), props.recipes[0].id, 1, 1, column))
 }
 
-
+function deleteProductionStep(productionStepId){
+    let index = productionSteps.value.findIndex((item) => item.id == productionStepId)
+    if(index == -1){
+        console.log("could not delete productionStep - id not found")
+        return
+    }
+    productionSteps.value.splice(index, 1);
+}
 
 function recipeOfChildChanged([newRecipeId, productionStepId]){
     // console.log("recipe of child called, ", productionSteps)
@@ -81,7 +88,7 @@ function getFromDisk() {
         <div v-for="i in columnCount" class="flex-row">
             <div class="drop-zone" @drop="onDrop($event, i)" @dragover.prevent @dragenter.prevent>
                 <div v-for="item in getColumnFromId(i)" :key="item.id" class="drag-el" draggable @dragstart="startDrag($event, item)" >
-                    <ProductionStep :recipes="props.recipes" :productionStepProps="item" @recipeChanged="recipeOfChildChanged"></ProductionStep>
+                    <ProductionStep :recipes="props.recipes" :productionStepProps="item" @recipeChanged="recipeOfChildChanged" @deleteProductionStep="deleteProductionStep"></ProductionStep>
                 </div>
                 <div>
                     <button @click="addDefaultProductionStep(i)">Add Production Step</button>

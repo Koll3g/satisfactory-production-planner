@@ -39,7 +39,7 @@
                     {{ recipe.name }}
                 </option>
             </select>
-            <img src="./icons/delete.png" style="height:20px; margin-left:5px"/>
+            <img src="./icons/delete.png" style="height:20px; margin-left:5px" @click="$emit('deleteProductionStep', [props.productionStepProps.id])"/>
         </div>
         <div class="flex-row">
             <div id="leftRow" class="flex-column,half-width"  style="margin-right:5px;margin-top:5px">

@@ -30,7 +30,7 @@ export class recipe {
     }
 
     static getRecipes(){
-        // console.log("generating recipe list from json file")
+        console.log("generating recipe list from json file")
         this.fillMaterialList(data);
         let rawRecipes = this.extractRecipes(data);
         let parsedRecipesResponse = this.parseRecipes(rawRecipes);

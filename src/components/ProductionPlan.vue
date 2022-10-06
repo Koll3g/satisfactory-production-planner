@@ -85,6 +85,8 @@ function getFromLocalStorage() {
     let key = "PRODUCTION_PLAN_1"
     let data = JSON.parse(localStorage.getItem(key))
 
+    console.log("version", window.$localStorageVersion)
+
     if(data.version == null){
         data = {version: "v1", productionSteps: data}
     }

@@ -3,6 +3,8 @@ import { uuid } from 'vue-uuid';
 import ProductionStep from './ProductionStep.vue';
 import {onUpdated, ref, onMounted} from 'vue'
 import {saveToLocalStorage, getFromLocalStorage} from './localStorage.js'
+import {Slide} from 'vue3-burger-menu'
+import GroupManager from './GroupManager.vue'
 
 const columnCount = 10
 
@@ -74,25 +76,38 @@ function recipeOfChildChanged([newRecipeId, productionStepId]){
 
 </script>
 
-<template>    
-    <div class="flex-row" >
-        <div v-for="i in columnCount" class="flex-row">
-            <div class="drop-zone" @drop="onDrop($event, i)" @dragover.prevent @dragenter.prevent>
-                <div v-for="item in getColumnFromId(i)" :key="item.id" class="drag-el" draggable @dragstart="startDrag($event, item)" >
-                    <ProductionStep :recipes="props.recipes" :productionStepProps="item" @recipeChanged="recipeOfChildChanged" @deleteProductionStep="deleteProductionStep"></ProductionStep>
-                </div>
-                <div>
-                    <button @click="addDefaultProductionStep(i)">Add Production Step</button>
+<template>
+    <div class="grid-container">
+    <div id="main-content">
+      <div id="app">
+        <Slide>
+          <GroupManager ></GroupManager>
+        </Slide>
+        <main id="page-wrap">
+            <div class="flex-row" >
+                <div v-for="i in columnCount" class="flex-row">
+                    <div class="drop-zone" @drop="onDrop($event, i)" @dragover.prevent @dragenter.prevent>
+                        <div v-for="item in getColumnFromId(i)" :key="item.id" class="drag-el" draggable @dragstart="startDrag($event, item)" >
+                            <ProductionStep :recipes="props.recipes" :productionStepProps="item" @recipeChanged="recipeOfChildChanged" @deleteProductionStep="deleteProductionStep"></ProductionStep>
+                        </div>
+                        <div>
+                            <button @click="addDefaultProductionStep(i)">Add Production Step</button>
+                        </div>
+                    </div>
+                    <div class="column-spacer"></div>
                 </div>
             </div>
-            <div class="column-spacer"></div>
-        </div>
+        </main>
+      </div>
     </div>
+  </div>
+    
 </template>
 
 <style scoped>
     .productionPlan {
         width: 100%;
+        border: 2px solid red;
     }
 
     .column-spacer {
@@ -119,4 +134,51 @@ function recipeOfChildChanged([newRecipeId, productionStepId]){
     .drag-el {
         cursor: pointer;
     }
+
+    .grid-container{
+      display: grid;
+      grid-template-columns: 38px auto
+    }
+  
+    #main-content{
+      grid-column-start: 2;
+      grid-column-end: 3;
+    }
+  
+    #app{
+      display: block
+    }
+
 </style>
+
+<style>
+    
+  
+    .bm-menu{
+      grid-column-start: 1 !important;
+      grid-column-end: 2 !important;
+      padding-top: 20px !important;
+    }
+  
+    .bm-burger-button {
+      position: fixed !important;
+      width: 18px !important;
+      height: 15px !important;
+      left: 10px !important;
+      top: 10px !important;
+      cursor: pointer !important;
+    }
+  
+    .bm-item-list {
+      font-size: 16px !important;
+      margin-left: 5% !important;
+    }
+  
+    .bm-item-list > * {
+        padding: 0 !important;
+      }
+    .bm-item-list > label {
+      margin-bottom: 5px;
+    }
+  </style>
+  

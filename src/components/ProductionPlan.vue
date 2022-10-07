@@ -101,7 +101,7 @@ function groupsChangedHandler([newGroups]){
                 <div v-for="i in columnCount" class="flex-row">
                     <div class="drop-zone" @drop="onDrop($event, i)" @dragover.prevent @dragenter.prevent>
                         <div v-for="item in getColumnFromId(i)" :key="item.id" class="drag-el" draggable @dragstart="startDrag($event, item)" >
-                            <ProductionStep :recipes="props.recipes" :productionStepProps="item" @recipeChanged="recipeOfChildChanged" @deleteProductionStep="deleteProductionStep"></ProductionStep>
+                            <ProductionStep :groups="groups" :recipes="props.recipes" :productionStepProps="item" @recipeChanged="recipeOfChildChanged" @deleteProductionStep="deleteProductionStep"></ProductionStep>
                         </div>
                         <div>
                             <button @click="addDefaultProductionStep(i)">Add Production Step</button>

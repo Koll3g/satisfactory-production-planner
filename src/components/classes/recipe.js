@@ -1,6 +1,6 @@
 import data from './data/docx.json'
 
-const recipeList = []
+var recipeList = []
 const recipeDictionary = {}
 
 export class recipe {

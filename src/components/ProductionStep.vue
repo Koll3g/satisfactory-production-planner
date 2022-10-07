@@ -7,9 +7,16 @@
     const efficency = ref(props.productionStepProps.efficency)
     const selectedRecipeId = ref(props.productionStepProps.recipeId)
 
+
+    const selectedStepGroup = ref({})
+    const selectedOutputGroup = ref({})
+    const selectedInputGroup = ref({})
+    const stepGroupSelectionActive = ref(false)
+
     const props = defineProps({
         recipes: Array,
-        productionStepProps: Object
+        productionStepProps: Object,
+        groups: Array
     })
 
 
@@ -51,14 +58,40 @@
                 <input class="fullWidth" type="number" placeholder="1" disabled="true"/>
             </div>
         </div>
-
+        <label v-if="stepGroupSelectionActive">Group:</label>
+        <div v-if="stepGroupSelectionActive" class="fullWidth, flex-row">
+            <select class="fullWidth" v-model="selectedStepGroup">
+                <option v-for="group in props.groups" :value="group">
+                    {{ group.name }}
+                </option>
+            </select>
+            <img src="./icons/split.png" style="height:20px; margin-right:5px; margin-left:5px"/>
+        </div>
         <div class="flex-row">
             <div class="flex-column, half-width">
+                <label >Input:</label>
+                <div v-if="!stepGroupSelectionActive" class="fullWidth, flex-row">
+                    <select class="fullWidth" v-model="selectedInputGroup">
+                        <option v-for="group in props.groups" :value="group">
+                            {{ group.name }}
+                        </option>
+                    </select>
+                    <img src="./icons/split.png" style="height:20px; margin-right:5px; margin-left:5px"/>
+                </div>
                 <li style="list-style: none;" v-for="ingredient in getSelectedRecipe(selectedRecipeId).ingredients">
                     <InputNode :materialName="ingredient.material.name" :totalAmount="calculateSpeed(ingredient.amount)" :unit="ingredient.material.getUnit()"></InputNode>
                 </li>
             </div>
             <div class="flex-column, half-width">
+                <label style="margin-left: 5px">Output:</label>
+                <div v-if="!stepGroupSelectionActive" class="fullWidth, flex-row" style="margin-left:5px">
+                    <select class="fullWidth" v-model="selectedOutputGroup">
+                        <option v-for="group in props.groups" :value="group">
+                            {{ group.name }}
+                        </option>
+                    </select>
+                    <img src="./icons/split.png" style="height:20px; margin-right:5px; margin-left:5px"/>
+                </div>
                 <li style="list-style: none; min-width: min-content" v-for="product in getSelectedRecipe(selectedRecipeId).products">
                     <OutputNode :materialName="product.material.name" :totalAmount="calculateSpeed(product.amount)" :unit="product.material.getUnit()"></OutputNode>
                 </li>
